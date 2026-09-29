@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "aw-watcher-displays"
+version = "0.1.0"
+description = "Multi-display watcher for ActivityWatch: which app is on top of each screen"
+authors = ["Michal Bravansky <michal.bravansky@metr.org>", "Khalid Alim"]
+license = "MPL-2.0"
+
+[tool.poetry.scripts]
+aw-watcher-displays = "aw_watcher_displays:main"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aw-client = "^0.5.14"
+pyobjc-framework-Quartz = { version = "*", platform = "darwin" }
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+mypy = "*"
+macholib = {version = "*", platform = "darwin"}
+pyinstaller = {version = "^6.6", python = "^3.8,<3.14"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

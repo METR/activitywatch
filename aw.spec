@@ -90,6 +90,7 @@ aw_qt_location = Path("aw-qt")
 awa_location = Path("aw-watcher-afk")
 aww_location = Path("aw-watcher-window")
 awi_location = Path("aw-watcher-input")
+awd_location = Path("aw-watcher-displays")
 aw_notify_location = Path("aw-notify")
 
 if platform.system() == "Darwin":
@@ -151,6 +152,7 @@ aw_watcher_afk_a = build_analysis(
     ],
 )
 aw_watcher_input_a = build_analysis("aw_watcher_input", awi_location)
+aw_watcher_displays_a = build_analysis("aw_watcher_displays", awd_location)
 aw_watcher_window_a = build_analysis(
     "aw_watcher_window",
     aww_location,
@@ -190,6 +192,7 @@ merge_args = [
     (aw_watcher_afk_a, "aw-watcher-afk", "aw-watcher-afk"),
     (aw_watcher_window_a, "aw-watcher-window", "aw-watcher-window"),
     (aw_watcher_input_a, "aw-watcher-input", "aw-watcher-input"),
+    (aw_watcher_displays_a, "aw-watcher-displays", "aw-watcher-displays"),
 ]
 if aw_notify_a is not None:
     merge_args.append((aw_notify_a, "aw-notify", "aw-notify"))
@@ -217,6 +220,9 @@ awq_coll = build_collect(
 # aw-watcher-input
 awi_coll = build_collect(aw_watcher_input_a, "aw-watcher-input")
 
+# aw-watcher-displays
+awd_coll = build_collect(aw_watcher_displays_a, "aw-watcher-displays")
+
 # aw-notify (only if Python package exists)
 aw_notify_coll = build_collect(aw_notify_a, "aw-notify") if aw_notify_a is not None else None
 
@@ -227,6 +233,7 @@ if platform.system() == "Darwin":
         aww_coll,
         awa_coll,
         awi_coll,
+        awd_coll,
     ]
     if aw_notify_coll is not None:
         bundle_args.append(aw_notify_coll)
