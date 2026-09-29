@@ -71,6 +71,14 @@ def test_focused_display_is_where_the_front_app_window_is():
     assert focused_display(ws, [LAPTOP, RIGHT], None) is None
 
 
+def test_focused_display_prefers_the_focused_window_over_the_apps_first_window():
+    ws = [win("Chrome", 1800, 0, 2000, 1400, pid=3), win("Chrome", 0, 0, 1728, 1117, pid=3)]
+    ws[0]["number"], ws[1]["number"] = 31, 32
+    assert focused_display(ws, [LAPTOP, RIGHT], 3) == 1
+    assert focused_display(ws, [LAPTOP, RIGHT], 3, frontmost_number=32) == 0
+    assert focused_display(ws, [LAPTOP, RIGHT], 3, frontmost_number=99) == 1  # unknown window: back to the pid
+
+
 def test_display_of_point():
     assert display_of_point([LAPTOP, RIGHT, LEFT], 10, 10) == 0
     assert display_of_point([LAPTOP, RIGHT, LEFT], 2000, 10) == 1

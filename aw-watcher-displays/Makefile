@@ -11,6 +11,7 @@ test:
 typecheck:
 	poetry run mypy aw_watcher_displays --ignore-missing-imports
 	poetry run mypy aw_watcher_displays --ignore-missing-imports --platform win32
+	poetry run mypy aw_watcher_displays --ignore-missing-imports --platform linux
 
 package:
 	pyinstaller aw-watcher-displays.spec --clean --noconfirm

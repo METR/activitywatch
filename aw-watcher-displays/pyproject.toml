@@ -12,6 +12,8 @@ aw-watcher-displays = "aw_watcher_displays:main"
 python = "^3.8"
 aw-client = "^0.5.14"
 pyobjc-framework-Quartz = { version = "*", platform = "darwin" }
+# locked like in aw-watcher-afk and aw-watcher-window
+python-xlib = { version = "0.31", platform = "linux" }
 
 [tool.poetry.dev-dependencies]
 pytest = "*"

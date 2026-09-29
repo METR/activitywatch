@@ -147,8 +147,13 @@ def test_frontmost_and_cursor(fake):
 def test_desktop_or_taskbar_in_front_defers_to_the_cursor(fake):
     fake.foreground = 108  # the desktop, owned by explorer.exe like any File Explorer window
     assert w.frontmost_pid([]) is None
+    assert w.frontmost_window() is None
     fake.foreground = 109  # the taskbar
     assert w.frontmost_pid([]) is None
+
+
+def test_frontmost_window_is_the_foreground_handle(fake):
+    assert w.frontmost_window() == 102
 
 
 def test_lock_screen_in_front_means_locked(fake):

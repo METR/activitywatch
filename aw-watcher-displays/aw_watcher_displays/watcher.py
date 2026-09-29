@@ -66,8 +66,10 @@ def load_backend() -> Any:
         from . import macos as backend
     elif system == "Windows":
         from . import windows as backend  # type: ignore[no-redef]
+    elif system == "Linux":
+        from . import linux as backend  # type: ignore[no-redef]
     else:
-        raise RuntimeError(f"aw-watcher-displays does not support {system} yet (macOS and Windows only)")
+        raise RuntimeError(f"aw-watcher-displays does not support {system} (macOS, Windows and Linux only)")
     backend.init()
     return backend
 
@@ -86,7 +88,9 @@ def sample(backend: Any, min_share: float = geometry.MIN_SHARE, min_cover: float
 
     windows = backend.window_list()
     per = geometry.assign_windows(windows, displays, min_share=min_share, min_cover=min_cover)
-    focused = geometry.focused_display(windows, displays, backend.frontmost_pid(windows))
+    frontmost_window = getattr(backend, "frontmost_window", None)
+    focused = geometry.focused_display(windows, displays, backend.frontmost_pid(windows),
+                                       frontmost_window() if frontmost_window else None)
     if focused is None:  # the app in front could not be placed on a display: use the display under the cursor
         pos = backend.cursor_position()
         if pos is not None:
@@ -119,6 +123,7 @@ class DisplaysWatcher:
 
     def heartbeat_loop(self, max_ticks: Optional[int] = None) -> None:
         pulsetime = self.args.poll_time + 1.0
+        fatal = getattr(self.backend, "FATAL_ERRORS", ())  # e.g. the X server has gone away
         ticks = 0
         while max_ticks is None or ticks < max_ticks:
             ticks += 1
@@ -129,6 +134,9 @@ class DisplaysWatcher:
                 data = sample(self.backend, self.args.min_share, self.args.min_cover)
                 e = Event(timestamp=datetime.now(timezone.utc), data=data)
                 self.client.heartbeat(self.bucketname, e, pulsetime=pulsetime, queued=True)
+            except fatal as e:
+                logger.error(f"aw-watcher-displays stopped: {e}")
+                raise SystemExit(1)
             except Exception:
                 logger.exception("Failed to sample the displays; skipping this tick")
             sleep(self.args.poll_time)

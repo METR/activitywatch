@@ -160,7 +160,7 @@ def test_once_prints_json_without_a_server(no_config_file, monkeypatch, capsys):
 def test_unsupported_platform_exits_with_an_error(no_config_file, monkeypatch):
     monkeypatch.setattr(watcher.sys, "argv", ["aw-watcher-displays", "--once"])
     monkeypatch.setattr(watcher, "setup_logging", lambda *a, **k: None)
-    monkeypatch.setattr(watcher.platform, "system", lambda: "Linux")
+    monkeypatch.setattr(watcher.platform, "system", lambda: "FreeBSD")
     with pytest.raises(SystemExit) as exc:
         watcher.main()
     assert exc.value.code == 1

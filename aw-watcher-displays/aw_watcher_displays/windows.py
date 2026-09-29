@@ -280,6 +280,13 @@ def frontmost_pid(windows: List[Dict[str, Any]]) -> Optional[int]:
     return api.pid(hwnd)
 
 
+def frontmost_window() -> Optional[int]:
+    """The foreground window's handle, which places it exactly even when its app has windows on other displays."""
+    api = _get_api()
+    hwnd = api.foreground_window()
+    return int(hwnd) if hwnd and api.class_name(hwnd) not in SHELL_CLASSES else None
+
+
 def cursor_position() -> Optional[Tuple[float, float]]:
     p = _get_api().cursor_pos()
     return (float(p[0]), float(p[1])) if p else None

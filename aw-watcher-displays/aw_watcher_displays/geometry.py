@@ -95,23 +95,32 @@ def assign_windows(
     return out
 
 
-def focused_display(windows, displays, frontmost_pid) -> Optional[int]:
+def focused_display(windows, displays, frontmost_pid, frontmost_number=None) -> Optional[int]:
     """Index of the display holding most of the frontmost app's front window, or None.
 
     The frontmost app's front window is its first usable window in front-to-back order. When the
     frontmost app has no usable on-screen window (empty Finder, lock screen) the result is None.
+    When the platform knows the focused window itself (frontmost_number), that window is used instead: the app's
+    first window can be on another display.
     """
-    if frontmost_pid is None:
-        return None
-    for win in windows:
-        if win["pid"] != frontmost_pid or not usable(win):
-            continue
+    def _largest(win):
         best, best_area = None, 0.0
         for i, disp in enumerate(displays):
             a = intersect_area(win["x"], win["y"], win["w"], win["h"], disp["x"], disp["y"], disp["w"], disp["h"])
             if a > best_area:
                 best, best_area = i, a
         return best
+
+    if frontmost_number is not None:
+        for win in windows:
+            if win.get("number") == frontmost_number and usable(win):
+                return _largest(win)
+    if frontmost_pid is None:
+        return None
+    for win in windows:
+        if win["pid"] != frontmost_pid or not usable(win):
+            continue
+        return _largest(win)
     return None
 
 
