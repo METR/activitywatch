@@ -31,6 +31,7 @@ endif
 ifeq ($(AW_EXTRAS),true)
 	SUBMODULES := $(SUBMODULES) aw-notify aw-watcher-input
 endif
+SUBMODULES := $(SUBMODULES) aw-watcher-displays
 
 # A function that checks if a target exists in a Makefile
 # Usage: $(call has_target,<dir>,<target>)
